@@ -1,3 +1,5 @@
+![alt text](https://github.com/RoyYangsCodingDiary/RoyYangsCodingDiary/blob/main/linux/1665188247270.jpeg?raw=true)
+
 - 👋 Hi, I’m @RoyYangsCodingDiary. I am currently a post-secondary student studying what I love, that is to say, I am working towards a BCom - Finance Specialist degree at the University of Toronto. 
 - 🌎 I'm an avid history fan, and I especially love learning about historical geopolitics. I love to cook, read, workout, and customise my Linux setup. 
 - 📈 I have a strong interest in anything related to finance, particularly capital markets and macroeconomics.
