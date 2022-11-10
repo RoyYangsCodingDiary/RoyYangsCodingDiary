@@ -1,0 +1,304 @@
+[finance]
+rate = 3600
+
+[colors]
+background = #00000000  
+background-alt = #333333
+foreground = #EBDBB2
+foreground2 = #EBDBB2
+foreground-alt = #EBDBB2
+primary = #EBDBB2
+secondary = #EBDBB2
+alert = #ff5555
+shade1 = #474747
+shade2 = #3b3b3b
+shade3 = #2f2f2f
+shade4 = #242424
+shade5 = #191919
+shade6 = #0c0c0c
+
+[bar/example]
+width = 100%
+height = 25
+radius = 0
+fixed-center = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 5
+padding-right = 5
+
+module-margin-left = 0
+module-margin-right = 0
+border-top-size = 3
+border-bottom-size = 3
+border-top-color = ${colors.background}
+border-bottom-color = ${colors.background}
+
+font-0 = fixed:pixelsize=10;1
+font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
+font-2 = siji:pixelsize=10;1
+font-3 = Fira Mono:style=Regular:size=9
+font-4 = FontAwesome:size=10
+font-5 = Fira Mono Regular:size=9
+font-6 = Fira Sans Book:size=10
+font-7 = Fira Mono Regular:size=11
+font-8 = Wigners Friend: Size = 11
+font-9 = Inconsolata for Powerline:style=Medium:pixelsize=15:antialias=true;3"
+font-10 = Noto Sans SC Light:style=Light,Regular:size=11
+
+modules-left = powermenu left4 i3 left3 pomo left1
+modules-center = right1 gspc dji ixic gold oil left1
+modules-right = right1 battery right2 rofication right3 date 
+
+tray-position = right
+tray-padding = 0
+tray-offset-x = -1%
+tray-background = ${colors.shade3}
+tray-transparency = false
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+
+[module/left1]
+type = custom/text
+content = 
+content-background = ${colors.background}
+content-foreground = ${colors.shade1}
+
+[module/left2]
+type = custom/text
+content = 
+content-background = ${colors.shade1}
+content-foreground = ${colors.shade2}
+
+[module/left3]
+type = custom/text
+content = 
+content-background = ${colors.shade1}
+content-foreground = ${colors.shade3}
+
+[module/left4]
+type = custom/text
+content = 
+content-background = ${colors.shade3}
+content-foreground = ${colors.shade4}
+
+
+[module/right1]
+type = custom/text
+content = 
+content-background = ${colors.background}
+content-foreground = ${colors.shade1}
+
+[module/right2]
+type = custom/text
+content = 
+content-background = ${colors.shade1}
+content-foreground = ${colors.shade3}
+
+[module/right3]
+type = custom/text
+content = 
+content-background = ${colors.shade3}
+content-foreground = ${colors.shade4}
+
+[module/right4]
+type = custom/text
+content = 
+content-background = ${colors.shade4}
+content-foreground = ${colors.shade5}
+
+[module/right5]
+type = custom/text
+content = 
+content-background = ${colors.shade5}
+content-foreground = ${colors.shade6}
+
+[module/xwindow]
+type = internal/xwindow
+label = %title%
+label-maxlen = 25
+label-background = ${colors.shade2}
+label-padding = 2
+label-layout = %layout%
+label-layout-underline = ${colors.secondary}
+
+label-indicator-padding = 2
+label-indicator-margin = 1
+label-indicator-background = ${colors.secondary}
+label-indicator-underline = ${colors.secondary}
+
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+format-background = ${colors.shade3}
+index-sort = true
+wrapping-scroll = false
+
+label-mode-padding = 2
+label-mode-foreground = ${colors.foreground}
+label-mode-background = ${colors.shade3}
+
+label-focused = ●
+label-focused-background = ${colors.shade3}
+label-focused-foreground = ${colors.foreground}
+label-focused-underline= ${colors.background}
+label-focused-padding = 2
+
+label-unfocused = ○
+label-unfocused-background = ${colors.shade3}
+label-unfocused-padding = 2
+label-unfocused-foreground = ${colors.foreground}
+
+label-visible = ○
+label-visible-background = ${colors.shade4}
+label-visible-underline = ${self.label-focused-underline}
+label-visible-padding = ${self.label-focused-padding}
+
+label-urgent = ●
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 2
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format-prefix-foreground = ${colors.foreground-alt}
+label =  %percentage:2%%
+label-background = ${colors.shade3}
+label-padding = 3
+
+[module/wlan]
+type = internal/network
+interface = wlo1
+interval = 3.0
+
+label-connected =    %upspeed%  %downspeed%
+label-connected-padding = 3
+label-connected-foreground = ${colors.foreground-alt}
+label-connected-background = ${colors.shade1}
+
+format-disconnected = [ Disconnected ]
+label-disconnected-background = ${colors.shade1}
+
+[module/date]
+type = internal/date
+interval = 5
+
+date = - %b %d
+date-alt = "%a %b %d, %Y /"
+
+time = %I:%M %p
+time-alt = / %I:%M:%S %p / %z %Z /
+
+label = %time% %date%
+label-background = ${colors.shade4}
+label-padding = 3
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ADP1
+full-at = 98
+
+label-charging =   %percentage%%
+label-discharging =  %percentage%%
+label-charging-background = ${colors.shade1}
+label-charging-padding = 3
+label-discharging-background = ${colors.shade1}
+label-discharging-padding = 3                  
+
+format-charging = <label-charging>
+
+format-discharging =  <label-discharging>
+
+format-full =  Full
+format-full-background = ${colors.shade1}
+format-full-padding = 3                  
+
+[module/powermenu]
+type = custom/script
+exec = echo "text"
+interval = 86400
+click-left = ~/.config/polybar/powermenu.sh
+label-background = ${colors.shade4}
+label-padding = 3
+label = ⏻  
+
+[module/pomo]
+type = custom/script
+interval = 1
+exec = pomodoro status
+label-padding = 3
+label = %output%
+label-background = ${colors.shade1}
+click-left = pomodoro start
+click-right = pomodoro break
+
+[module/rofication]
+type = custom/script
+interval = 1
+exec = /usr/bin/rofication-status-number
+label =  %output%
+label-padding = 3
+label-background = ${colors.shade3}
+click-left = /usr/bin/rofication-gui
+
+;custom finance modules
+
+[module/gspc]
+type = custom/script
+interval = ${finance.rate}
+exec = ~/.config/polybar/stock.py --ct ^GSPC
+tail = true
+label = %output%
+label-padding = 1
+label-background = ${colors.shade1}
+
+[module/dji]
+type = custom/script
+interval = ${finance.rate}
+exec = ~/.config/polybar/stock.py --ct ^DJI
+tail = true
+label = %output%
+label-background = ${colors.shade1}
+label-padding = 1     
+
+[module/ixic]
+type = custom/script
+interval = ${finance.rate}
+exec = ~/.config/polybar/stock.py --ct ^IXIC 
+tail = true
+label = %output%
+label-background = ${colors.shade1}
+label-padding = 1     
+
+[module/gold]
+type = custom/script
+interval = ${finance.rate}
+exec = ~/.config/polybar/stock.py --ct GC=F 
+tail = true
+label = %output%
+label-background = ${colors.shade1}
+label-padding = 1     
+
+[module/oil]
+type = custom/script
+interval = ${finance.rate}
+exec = ~/.config/polybar/stock.py --ct CL=F
+tail = true
+label = %output%
+label-background = ${colors.shade1}
+label-padding = 1
+
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+compositing-foreground = source
+;compositing-border = over
+pseudo-transparency = true
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
