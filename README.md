@@ -21,12 +21,12 @@
 - Working Out
 - Customizing my Linux setup
 
-## 🌱 Current Coding Goals
-- Learning Python for Data Science and Machine Learning
-- Learning SQL
-- Learning how to write Excel VBA code
-- Tableau
-- PowerBi
+## 🌱 Current Goals
+- Learn Python for Data Science and Machine Learning
+- Learn SQL
+- Learn how to write Excel VBA code
+- Learn Tableau
+- Learn PowerBi
 
 ## 💻 About
 This Github repository is a virtual diary on my coding progress over the years, which include some of the various projects I have worked on.
