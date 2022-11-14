@@ -42,7 +42,7 @@ This Github repository is a virtual diary on my coding progress over the years, 
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=yushi1007&layout=compact)](https://github.com/RoyYangsCodingDiary)
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=RoyYangsCodingDiary&layout=compact)](https://github.com/RoyYangsCodingDiary)
 
 <!---
 RoyYangsCodingDiary/RoyYangsCodingDiary is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
