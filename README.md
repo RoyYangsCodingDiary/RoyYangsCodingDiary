@@ -23,7 +23,7 @@
 
 ## 🌱 Current Goals
 - Learn Python for Data Science and Machine Learning
-- Learn SQL
+- Learn R
 - Learn how to write Excel VBA code
 - Learn Tableau
 - Learn PowerBi
