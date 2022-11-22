@@ -1,4 +1,4 @@
-// Data Project 1 for ECO220, Introduction to Data Analysis and Applied Econometrics
+// Data Project 1 File for Roy Yang, ...
 
 // Step 1: Rename old variables to new, simpler names
 rename year yr
@@ -169,3 +169,42 @@ gen brent_growth = (brent - brent_lag)/brent_lag
 
 // Generate time series line graph
 line gdp_growth brent_growth yr, title(GDP Growth (%) and Growth of Brent Prices YoY) ytitle(Growth (%)) xtitle(Year)
+
+// We're going to prove that oil has economic impacts on real wages/income, but wages/income was not provided in the same dataset, so we imported data from FRED (Link: https://fred.stlouisfed.org) "Real Median Personal Income in the United States, 2021 CPI-U-RS Adjusted Dollars, Annual, Not Seasonally Adjusted"
+
+import excel "C:\Users\yangroy\Documents\wages_data_set.xlsx", sheet("Sheet1"
+> ) firstrow
+
+// Find US oil production as % of real wages
+
+// Find US oil production as % of real wages
+rename year yr
+rename oil_price_br brent
+rename oil_cons_usa oil_cons
+rename oil_prod_usa oil_prod
+rename share_pipelines share_pipe
+rename gdp_real_usa gdp
+rename pop_usa pop
+rename cpi_all_usa cpi
+rename ir_usa ir
+rename employed_usa employed
+rename unemploy_rate_usa unemployed
+rename real_med_income income
+
+correlate income oil_cons oil_prod
+
+scatter income oil_cons, title(Oil Consumption and its Impact on Real Median Income) ytitle(US Real Median Personal Income (USD)) xtitle(US Oil Consumption (1000s of Barrels))
+
+scatter income oil_prod, title(Oil Production and its Impact on Real Median Income) ytitle(US Real Median Personal Income (USD)) xtitle(US Oil Production (1000s of Barrels))
+
+// We will define demand shocks in oil as any consumption over the average oil consumption, filter out GDP for those years, and then find details for those years and compare them to unfiltered GDP
+summarize oil_cons, detail
+
+//We now know that the average is 10135.39, so we use that to generate a new variable that filters out GDP (in billions) for any demand shocks
+gen oil_cons_shocks = gdp/1000 if oil_cons >= 10135.39
+gen gdp_bill = gdp/1000
+summarize oil_cons_shocks, detail
+summarize gdp_bill, detail
+// Generate box plot
+graph hbox gdp_bill, title (GDP in Billions)
+graph hbox oil_cons_shocks, title (GDP in Billions for years with Positive Demand Shocks in Oil)
