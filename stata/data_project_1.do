@@ -208,3 +208,26 @@ summarize gdp_bill, detail
 // Generate box plot
 graph hbox gdp_bill, title (GDP in Billions)
 graph hbox oil_cons_shocks, title (GDP in Billions for years with Positive Demand Shocks in Oil)
+
+// To answer question 3, we will import a new dataset
+import excel "C:\Users\yangroy\Documents\data_question_2.xlsx
+> ", sheet("Sheet1") firstrow
+
+line oil_price_br year, title(Oil Prices over Time) ytitle(Brent Oil Prices) xtitle(Year)
+ 
+ line gdp_growth1970 year_growth_1970, title(GDP Growth from 1970 to 1975) ytitle(Brent Oil Prices) xtitle(Year)
+ scatter gdp_growth1970 year_growth_1970, title(GDP Growth from 1970 to 1975) ytitle(Brent Oil Prices) xtitle(Year)
+
+ line gdp_growth_2003 year_growth_2003, title(GDP Growth from 2003 to 2009) ytitle(Brent Oil Prices) xtitle(Year)
+ scatter gdp_growth_2003 year_growth_2003, title(GDP Growth from 2003 to 2009) ytitle(Brent Oil Prices) xtitle(Year)
+
+summarize oil_price_1970, detail
+summarize oil_price_2008, detail
+summarize oil_price_2020, detail
+
+sysuse auto, clear
+
+foreach x in gdp_1970 oil_price_1970 gdp_2008 oil_price_2008 oil_price_br oil_price_2020{
+    sum `x'
+    display "Coefficient of Variation = " r(sd)/r(mean)
+}
