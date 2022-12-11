@@ -4,6 +4,7 @@
 # Published: December 11, 2022
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Loading in the data
 pulls_one = pd.read_csv('datasets/pulls_2011-2013.csv')
