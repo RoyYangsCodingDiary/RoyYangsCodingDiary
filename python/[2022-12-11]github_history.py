@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 
 # Guided project by Datacamp
