@@ -9,6 +9,9 @@ plotly.offline.init_notebook_mode(connected=True)
 import plotly.graph_objs as go
 import seaborn as sns
 import warnings
+import numpy as np
+import matplotlib.pyplot as plt
+
 sns.set_style("darkgrid")
 warnings.filterwarnings("ignore")
 
@@ -32,8 +35,6 @@ for col in cols_to_clean:
         apps[col] = apps[col].apply(lambda x: x.replace(char, ""))
         
 print(apps.info())
-
-import numpy as np
 
 apps["Installs"] = apps["Installs"].astype(np.float64)
 
@@ -87,7 +88,6 @@ paid_apps = apps_with_size_and_rating_present[apps_with_size_and_rating_present[
 
 plt2 = sns.jointplot(x = 'Price', y = 'Rating', data=paid_apps)
 
-import matplotlib.pyplot as plt
 fig, ax = plt.subplots()
 fig.set_size_inches(15, 8)
 
