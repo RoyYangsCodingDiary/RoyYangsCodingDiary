@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Guided project by Datacamp
-# Published: December 11, 2022
+# Published: December 21, 2022
 
 import pandas as pd
 import plotly
