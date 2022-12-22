@@ -6,6 +6,8 @@
 import pandas as pd
 import seaborn as sns
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 
 nobel = pd.read_csv('datasets/nobel.csv')
 
@@ -31,14 +33,12 @@ display(prop_usa_winners)
 # Setting the plotting theme
 sns.set()
 # and setting the size of all plots.
-import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = [11, 7]
 
 # Plotting USA born winners 
 ax = sns.lineplot(data=nobel, x='decade', y='usa_born_winner')
 
 # Adding %-formatting to the y-axis
-from matplotlib.ticker import PercentFormatter
 ax.yaxis.set_major_formatter(PercentFormatter(1.0))
 
 # Calculating the proportion of female laureates per decade
