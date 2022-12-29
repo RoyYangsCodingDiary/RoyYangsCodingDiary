@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Project Guided by DataCamp
 # Analysis of Handwashing and its effects on childbirth death rates
 
