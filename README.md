@@ -22,11 +22,9 @@
 - Customizing my Linux setup
 
 ## 🌱 Current Goals
-- Learn Python for Data Science and Machine Learning
+- Master Python for Machine Learning and Quantitative Finance
 - Learn R
 - Learn how to write Excel VBA code
-- Learn Tableau
-- Learn PowerBi
 
 ## 💻 About
 This Github repository is a virtual diary on my coding progress over the years, which include some of the various projects I have worked on.
