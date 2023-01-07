@@ -23,7 +23,7 @@ data
 # Convert dataframe to numpy array
 dataset = data.values
 
-# Get number of rows to train model on (assuming 90% of data is used for training) and round up with math.ceil
+# Get number of rows to train model on (assuming 80% of data is used for training) and round up with math.ceil
 training_data_len = math.ceil(len(dataset)*0.8)
 print(training_data_len)
 
