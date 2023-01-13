@@ -112,3 +112,46 @@ plt.legend(['Training', 'Actual', 'Predictions'], loc='lower right')
 plt.show()
 
 # Saved as s&p500_price_predictions under the images folder on my Github page
+
+
+
+# Predict close prices for the next 2 months
+end = date(2023,1,1)
+quote_df = yf.Ticker('^GSPC').history(start='2018-01-01', end=str(end))
+quote_df2 = quote_df['Close']
+# Get closing prices for the last 180 days and convert to array
+last_60_days = quote_df2[-60:].values
+# Reshape from 1D array to 2D array
+last_60_days = np.reshape(last_60_days, (last_60_days.shape[0], 1))
+
+for i in range(60):
+    # Of course, scale the data
+    last_60_days = last_60_days.reshape(-1, 1)
+    last_60_days_scaled = scaler.transform(last_60_days)
+    # Convert scaled data to np array
+    X_test = []
+    X_test.append(last_60_days_scaled)
+    X_test = np.array(X_test)
+
+    # Reshape data
+    X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+    # Get predicted price
+    predicted_price = model.predict(X_test)
+    # Undo scaling
+    predicted_price = scaler.inverse_transform(predicted_price)
+    print(predicted_price)
+    last_60_days = np.append(last_60_days, predicted_price)
+    last_60_days = np.delete(last_60_days, 0)
+last_60_days.shape
+last_60_days
+
+future_pred_prices = pd.DataFrame(last_60_days)
+plt.figure(figsize=(20,8))
+plt.title('S&P 500 Prices Using LSTM')
+plt.xlabel('Days from Jan. 1, 2023 Onwards', fontsize=18)
+plt.ylabel('Close Price in USD', fontsize=18)
+plt.plot(future_pred_prices[0])
+plt.show()
+plt.clf()
+
+# As of the first run of the model, the price target for the S&P 500 for the next 2 months is 4030
