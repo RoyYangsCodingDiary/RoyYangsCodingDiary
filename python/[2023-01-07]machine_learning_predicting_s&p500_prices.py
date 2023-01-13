@@ -70,7 +70,7 @@ model.add(Dense(1))
 model.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train the model
-model.fit(x_train, y_train, batch_size=1, epochs=1)
+model.fit(x_train, y_train, batch_size=1, epochs=10)
 
 # Create testing data set
 test_data = scaled_data[training_data_len - days:, :]
@@ -111,7 +111,7 @@ plt.plot(validation[['Close', 'Predictions']])
 plt.legend(['Training', 'Actual', 'Predictions'], loc='lower right')
 plt.show()
 
-# Saved as s&p500_price_predictions under the images folder on my Github page
+# The first run with 1 epoch is saved as s&p500_price_predictions under the images folder on my Github page
 
 
 
