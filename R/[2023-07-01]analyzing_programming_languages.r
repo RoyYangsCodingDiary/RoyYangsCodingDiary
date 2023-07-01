@@ -1,5 +1,3 @@
-#!/usr/bin/env Rscript
-
 # Load libraries
 library(readr)
 library(dplyr)
