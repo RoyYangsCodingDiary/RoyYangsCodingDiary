@@ -1,3 +1,2 @@
 *.py text diff=python
 *.R linguist-language=R
-*.sql linguist-language=plpgsql
