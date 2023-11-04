@@ -143,226 +143,226 @@ import datetime as dt
 import math
 import re
 import warnings
+import os
 warnings.simplefilter("ignore")
 
-# Functions
-class yahoo:
-    def get_open(link):
-        with urlopen(Request(url = link, headers={'User-Agent': 'Mozilla/5.0'})) as response:
-            webpage = response.read()
-        soup = BeautifulSoup(webpage, 'html.parser')
-        return float((soup.find('td', attrs={'class': 'Ta(end) Fw(600) Lh(14px)', 'data-test': 'OPEN-value'}).text).replace(",",""))
-    def get_current(link):
-        with urlopen(Request(url = link, headers={'User-Agent': 'Mozilla/5.0'})) as response:
-            webpage = response.read()
-        soup = BeautifulSoup(webpage, 'html.parser')
-        return float((soup.find('fin-streamer', {'class': 'Fw(b) Fz(36px) Mb(-4px) D(ib)'}).text).replace(",",""))
+indicators = {
+            "SPX": "https://ca.finance.yahoo.com/quote/%5EGSPC?p=%5EGSPC",
+            "DJI": "https://ca.finance.yahoo.com/quote/%5EDJI?p=%5EDJI",
+            "NASDAQ": "https://ca.finance.yahoo.com/quote/%5EIXIC?p=^IXIC&.tsrc=fin-srch",
+            "Russell 2000": "https://ca.finance.yahoo.com/quote/%5ERUT?p=%5ERUT",
+            "S&P/TSX": "https://ca.finance.yahoo.com/quote/%5EGSPTSE?p=%5EGSPTSE",
+            "FTSE 100": "https://ca.finance.yahoo.com/quote/%5EFTSE?p=%5EFTSE",
+            "Euro Stoxx 50 Eur": "https://ca.investing.com/indices/eu-stoxx50", 
+            "Shanghai Composite Index": "https://finance.yahoo.com/quote/000001.SS",
+            "Hang Seng Index": "https://ca.finance.yahoo.com/quote/%5EHSI?p=^HSI&.tsrc=fin-srch",
+            "Nikkei 225": "https://ca.finance.yahoo.com/quote/%5EN225?p=%5EN225",
+            "VIX": "https://ca.finance.yahoo.com/quote/%5EVIX?p=^VIX&.tsrc=fin-srch",
+            "STOXX 50 Volatility Eur": "https://www.investing.com/indices/stoxx-50-volatility-vstoxx-eur",
+            "US Dollar Index": "https://ca.finance.yahoo.com/quote/%5ENYICDX?p=^NYICDX&.tsrc=fin-srch",
+            "USD/CAD": "https://ca.finance.yahoo.com/quote/CAD=X?p=CAD=X&.tsrc=fin-srch",
+            "EUR/USD": "https://ca.finance.yahoo.com/quote/EURUSD=X?p=EURUSD=X&.tsrc=fin-srch",
+            "USD/CNY": "https://ca.finance.yahoo.com/quote/CNY=X?p=CNY=X&.tsrc=fin-srch",
+            "USD/JPY": "https://ca.finance.yahoo.com/quote/JPY=X?p=JPY=X&.tsrc=fin-srch",
+            "GBP/USD": "https://ca.finance.yahoo.com/quote/GBPUSD=X?p=GBPUSD=X&.tsrc=fin-srch",
+            "SOFR": "https://www.sofrrate.com/",                                            
+            "Headline CPI":"https://fred.stlouisfed.org/series/CPIAUCSL",
+            "Core CPI":"https://fred.stlouisfed.org/series/CPILFESL",
+            "Fed Funds":"https://fred.stlouisfed.org/series/FEDFUNDS",
+            "Unemp. Rate":"https://fred.stlouisfed.org/series/UNRATE",
+            "US 1 Month Yield":"https://www.marketwatch.com/investing/bond/tmubmusd01m?countryCode=BX",
+            "US 3 Month Yield":"https://www.marketwatch.com/investing/bond/tmubmusd03m?countryCode=BX",
+            "US 6 Month Yield":"https://www.marketwatch.com/investing/bond/tmubmusd06m?countryCode=BX",
+            "US 1 Year Yield":"https://www.marketwatch.com/investing/bond/tmubmusd01y?countryCode=BX",
+            "US 2 Year Yield":"https://www.marketwatch.com/investing/bond/tmubmusd02y?countryCode=BX",
+            "US 3 Year Yield":"https://www.marketwatch.com/investing/bond/tmubmusd03y?countryCode=BX",
+            "US 5 Year Yield":"https://www.marketwatch.com/investing/bond/tmubmusd05y?countryCode=BX",
+            "US 7 Year Yield":"https://www.marketwatch.com/investing/bond/tmubmusd07y?countryCode=BX",
+            "US 10 Year Yield":"https://www.marketwatch.com/investing/bond/tmubmusd10y?countryCode=BX",
+            "US 30 Year Yield":"https://www.marketwatch.com/investing/bond/tmubmusd30y?countryCode=BX"
+        }
 
-def get_market_watch_intraday_quote(url):
-    with urlopen(Request(url = url, headers={'User-Agent': 'Mozilla/5.0'})) as response:
-        webpage = response.read()
-    soup = BeautifulSoup(webpage, 'html.parser')
-    return "{:.2f}".format(float(soup.find('bg-quote', class_='value').get_text()))
+class finreport:
+    def __init__(self):
+        self.econ_calendar_link = "https://www.investing.com/economic-calendar/"
+        self.yahoo_indicators = {key: value for key, value in indicators.items() if "ca.finance.yahoo.com" in value}
+        self.bond_indicators = {key: value for key, value in indicators.items() if "www.marketwatch.com/investing/bond" in value}
+        self.econ_indicators = {key: value for key, value in indicators.items() if "fred.stlouisfed.org" in value}
+        self.investing_indicators = {key: value for key, value in indicators.items() if "investing.com" in value}
+        self.sofr_indicators = {key: value for key, value in indicators.items() if "sofrrate.com" in value}
+    def get_indicators(self):
+        temp_dict1 = {}
+        for key, value in self.yahoo_indicators.items():
+            with urlopen(Request(url = value, headers={'User-Agent': 'Mozilla/5.0'})) as response:
+                webpage = response.read()
+            soup = BeautifulSoup(webpage, 'html.parser')
+            open_value = float((soup.find('td', attrs={'class': 'Ta(end) Fw(600) Lh(14px)', 'data-test': 'OPEN-value'}).text).replace(",",""))
+            temp_dict1[key] = open_value
 
-def get_investing_open(url):
-    with urlopen(Request(url = url, headers={'User-Agent': 'Mozilla/5.0'})) as response:
-        webpage = response.read()
-    soup = BeautifulSoup(webpage, 'html.parser')
-    return "{:.2f}".format(float(soup.find('span', class_='key-info_dd-numeric__ZQFIs').get_text().replace(",","")))
+        for key, value in self.bond_indicators.items():
+            with urlopen(Request(url = value, headers={'User-Agent': 'Mozilla/5.0'})) as response:
+                webpage = response.read()
+            soup = BeautifulSoup(webpage, 'html.parser')
+            return_value = "{:.3f}".format(float((soup.find('h2', class_='intraday__price sup--right').get_text()).replace("$","").replace("%","")))
+            temp_dict1[key] = return_value
 
-def get_sofr_rate(url):
-    with urlopen(Request(url = url, headers={'User-Agent': 'Mozilla/5.0'})) as response:
-        webpage = response.read()
-    soup = BeautifulSoup(webpage, 'html.parser')
-    cleaned_sofr = float(re.findall(r'[-\d.,]+', soup.find('p', class_='sofrrate').get_text())[0])
-    return "{:.2f}%".format(cleaned_sofr)
+        for key, value in self.econ_indicators.items():
+            with urlopen(Request(url = value, headers={'User-Agent': 'Mozilla/5.0'})) as response:
+                webpage = response.read()
+            soup = BeautifulSoup(webpage, 'html.parser')
+            as_of_date = soup.find('span', {'class': 'series-meta-value'}).text.replace(":","")
+            return_value = soup.find('span', {'class': 'series-meta-observation-value'}).text
+            temp_dict1[key] = return_value
 
-def write_indicator_commentary(row):
-    time = str(row["Time"])
-    cur = str(row["Cur"])
-    event = str(row["Event"])
-    actual = str(row["Actual"])
-    if len(re.findall(r'[-\d.,]+', actual)) == 0:
-        actual_num = np.nan
-    else:
-        actual_num = float(re.findall(r'[-\d.,]+', actual)[0].replace(",",""))
+        for key, value in self.investing_indicators.items():
+            with urlopen(Request(url = value, headers={'User-Agent': 'Mozilla/5.0'})) as response:
+                webpage = response.read()
+            soup = BeautifulSoup(webpage, 'html.parser')
+            return_value = "{:.2f}".format(float(soup.find('span', class_='key-info_dd-numeric__ZQFIs').get_text().replace(",","")))
+            temp_dict1[key] = return_value
 
-    forecast = str(row["Forecast"])
-    if len(re.findall(r'[-\d.,]+', forecast)) == 0:
-        forecast_num = np.nan
-    else:
-        forecast_num = float(re.findall(r'[-\d.,]+', forecast)[0].replace(",",""))
+        for key, value in self.sofr_indicators.items():
+            with urlopen(Request(url = value, headers={'User-Agent': 'Mozilla/5.0'})) as response:
+                webpage = response.read()
+            soup = BeautifulSoup(webpage, 'html.parser')
+            cleaned_sofr = float(re.findall(r'[-\d.,]+', soup.find('p', class_='sofrrate').get_text())[0])
+            temp_dict1[key] = cleaned_sofr
+
+        commodities_df = pd.read_html("https://markets.businessinsider.com/commodities/realtime-list")[0]
+        commodities_df = commodities_df.drop(columns=commodities_df.columns[-1])
+        commodities_df.columns = ["Commodity", "Last", "Previous Close", "%", "Absolute", "Trade Time", "Unit"]
+        commodities_df = commodities_df.dropna(subset=["Commodity"])
+        commodities_df = commodities_df.reset_index(drop=True)
+        commodities_df["Commodity"] = commodities_df["Commodity"].str.replace(" \(Henry Hub\)", "")
         
-    previous = str(row["Previous"])
-    if len(re.findall(r'[-\d.,]+', previous)) == 0:
-        previous_num = np.nan
-    else:
-        previous_num = float(re.findall(r'[-\d.,]+', previous)[0].replace(",",""))
-
-    if pd.isna(actual_num):
-        return f"{time} {cur}: {event} upcoming release, previous figure at {previous}"
-    elif pd.isna(previous_num):
-        return f"{time} {cur}: {event} upcoming release"
-    elif actual_num > previous_num:
-        up_or_down = "up"
-    elif actual_num < previous_num:
-        up_or_down = "down"
-    else:
-        up_or_down = "same"
+        os.chdir("/home/cole/Sync/jupyter_projects/datafiles")
+        os.listdir()
+        log_figures = pd.read_csv("finance_data_log.csv", delimiter="\t")
         
-    if pd.isna(forecast_num):
-        return f"{time} {cur}: {event} at {actual}, {up_or_down} from previous {previous}"
+        commodity_copy = commodities_df[["Commodity", "Last"]]
+        commodity_copy.columns = ["Indicator", "Last"]
+        updated_figures = pd.concat([pd.DataFrame(list(temp_dict1.items()), columns=["Indicator", f"Last"]), commodity_copy]).reset_index(drop=True)
 
-    elif actual_num > forecast_num:
-        above_or_below = "above"
-    elif actual_num < forecast_num:
-        above_or_below = "below"
-    else:
-        above_or_below = "in line with"
-    return f"{time} {cur}: {event} at {actual}, {up_or_down} from previous {previous}, {above_or_below} consensus of {forecast}"
+        current_date_string = dt.datetime.today().strftime('%Y-%m-%d')
 
-def get_indicators_report(link):
-    ### Economic Events
-    with urlopen(Request(url = link, headers={'User-Agent': 'Mozilla/5.0'})) as response:
+        if (pd.to_datetime(log_figures.columns[1]).month == 12) & (dt.datetime.today().month == 1):
+            log_figures[log_figures.columns[1]] = updated_figures["Last"]
+            new_columns = log_figures.columns.tolist()
+            new_columns[1] = current_date_string
+            log_figures.columns = new_columns
+            os.chdir("/home/cole/Sync/jupyter_projects/datafiles")
+            log_figures.to_csv("finance_data_log.csv", sep="\t", index=False, mode='w')
+            
+        combined_df = updated_figures.merge(log_figures, on="Indicator")
+
+        commentary_str = ""
+
+        col1 = combined_df.columns[0]
+        col2 = combined_df.columns[1]
+        col3 = combined_df.columns[2]
+
+        for index, row in combined_df.iterrows():
+            indicator = row[col1]
+            current = row[col2]
+            ytd = row[col3]
+
+            if not (pd.isna(ytd)) or (pd.isna(current)):
+                ytd_chg = (float(current)/float(ytd))-1
+                if ytd_chg >= 0:
+                    ytd_comment = f", up {round(float(ytd_chg),2)}% YTD"
+                else:
+                    ytd_comment = f", down {round(float(ytd_chg),2)}% YTD"
+            else:
+                ytd_comment = ""
+
+            commentary_str = commentary_str + f"{indicator}: {current}{ytd_comment}\n"
+
+        return commentary_str
+    def write_indicator_commentary(self, row):
+        time = str(row["Time"])
+        cur = str(row["Cur"])
+        event = str(row["Event"])
+        actual = str(row["Actual"])
+        if len(re.findall(r'[-\d.,]+', actual)) == 0:
+            actual_num = np.nan
+        else:
+            actual_num = float(re.findall(r'[-\d.,]+', actual)[0].replace(",",""))
+
+        forecast = str(row["Forecast"])
+        if len(re.findall(r'[-\d.,]+', forecast)) == 0:
+            forecast_num = np.nan
+        else:
+            forecast_num = float(re.findall(r'[-\d.,]+', forecast)[0].replace(",",""))
+
+        previous = str(row["Previous"])
+        if len(re.findall(r'[-\d.,]+', previous)) == 0:
+            previous_num = np.nan
+        else:
+            previous_num = float(re.findall(r'[-\d.,]+', previous)[0].replace(",",""))
+
+        if pd.isna(actual_num):
+            return f"{time} {cur}: {event} upcoming release, previous figure at {previous}"
+        elif pd.isna(previous_num):
+            return f"{time} {cur}: {event} upcoming release"
+        elif actual_num > previous_num:
+            up_or_down = "up"
+        elif actual_num < previous_num:
+            up_or_down = "down"
+        else:
+            up_or_down = "same"
+
+        if pd.isna(forecast_num):
+            return f"{time} {cur}: {event} at {actual}, {up_or_down} from previous {previous}"
+
+        elif actual_num > forecast_num:
+            above_or_below = "above"
+        elif actual_num < forecast_num:
+            above_or_below = "below"
+        else:
+            above_or_below = "in line with"
+        return f"{time} {cur}: {event} at {actual}, {up_or_down} from previous {previous}, {above_or_below} consensus of {forecast}"
+
+    def get_econ_calendar(self):
+        with urlopen(Request(url = self.econ_calendar_link, headers={'User-Agent': 'Mozilla/5.0'})) as response:
             webpage = response.read()
-    economic_events = pd.read_html(webpage)[2]
-    economic_events.columns = ["Time", "Cur", "Importance", "Event", "Actual", "Forecast", "Previous", "Extra1", "Extra2"]
-    economic_events = economic_events.drop(columns=["Extra1", "Extra2"], index=0)
-    economic_events = economic_events[economic_events["Cur"].isin(["JPY", "EUR", "CNY", "USD", "CAD"])]
+        economic_events = pd.read_html(webpage)[2]
+        economic_events.columns = ["Time", "Cur", "Importance", "Event", "Actual", "Forecast", "Previous", "Extra1", "Extra2"]
+        economic_events = economic_events.drop(columns=["Extra1", "Extra2"], index=0)
+        economic_events = economic_events[economic_events["Cur"].isin(["JPY", "EUR", "CNY", "USD", "CAD"])]
 
-    if len(list(economic_events[economic_events["Importance"] == "Holiday"]["Event"].drop_duplicates())) == 0:
-        holidays = "No market holidays today"
-    else:
-        holidays = "\n".join(list(economic_events[economic_events["Importance"] == "Holiday"]["Event"].drop_duplicates()))
+        if len(list(economic_events[economic_events["Importance"] == "Holiday"]["Event"].drop_duplicates())) == 0:
+            holidays = "No market holidays today"
+        else:
+            holidays = "\n".join(list(economic_events[economic_events["Importance"] == "Holiday"]["Event"].drop_duplicates()))
 
-    speeches = economic_events[economic_events[["Actual", "Forecast", "Previous"]].isnull().all(axis=1)][["Time", "Event"]]
-    speeches["Final"] = economic_events["Event"].astype(str) + " at " + economic_events["Time"]
-    speeches_string = "\n".join(list(speeches["Final"]))
+        speeches = economic_events[economic_events[["Actual", "Forecast", "Previous"]].isnull().all(axis=1)][["Time", "Event"]]
+        speeches["Final"] = economic_events["Event"].astype(str) + " at " + economic_events["Time"]
+        speeches_string = "\n".join(list(speeches["Final"]))
 
-    indicators = economic_events[~((economic_events["Event"].isin(speeches["Event"])) | (economic_events["Event"].isin(economic_events[economic_events["Importance"] == "Holiday"]["Event"].drop_duplicates())))].reset_index(drop=True)
-    indicators = indicators.fillna("NA")
+        indicators = economic_events[~((economic_events["Event"].isin(speeches["Event"])) | (economic_events["Event"].isin(economic_events[economic_events["Importance"] == "Holiday"]["Event"].drop_duplicates())))].reset_index(drop=True)
+        indicators = indicators.fillna("NA")
 
-    already_released = indicators[indicators["Actual"] != "NA"]
-    coming_up = indicators[indicators["Actual"] == "NA"]
-    return holidays, speeches_string, already_released, coming_up
-    
-def get_fred(url):
-    with urlopen(Request(url = url, headers={'User-Agent': 'Mozilla/5.0'})) as response:
-        webpage = response.read()
-    soup = BeautifulSoup(webpage, 'html.parser')
-    as_of_date = soup.find('span', {'class': 'series-meta-value'}).text.replace(":","")
-    value = soup.find('span', {'class': 'series-meta-observation-value'}).text
-    return as_of_date, value
+        already_released = indicators[indicators["Actual"] != "NA"]
+        coming_up = indicators[indicators["Actual"] == "NA"]
 
-# Yahoo Finance Data
-yahoo_data = {
-    "SPX":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EGSPC?p=%5EGSPC"),
-    "DJI":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EDJI?p=%5EDJI"),
-    "NASDAQ":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EIXIC?p=^IXIC&.tsrc=fin-srch"),
-    "Russell 2000":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5ERUT?p=%5ERUT"),
-    "S&P/TSX":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EGSPTSE?p=%5EGSPTSE"),
-    "FTSE 100":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EFTSE?p=%5EFTSE"),
-    "Euro Stoxx 50 Eur":get_investing_open("https://ca.investing.com/indices/eu-stoxx50"),
-    "Shanghai Composite Index":yahoo.get_open("https://finance.yahoo.com/quote/000001.SS"),
-    "Hang Seng Index":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EHSI?p=^HSI&.tsrc=fin-srch"),
-    "Nikkei 225":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EN225?p=%5EN225"),
-    "VIX":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5EVIX?p=^VIX&.tsrc=fin-srch"),
-    "STOXX 50 Volatility Eur":get_investing_open("https://www.investing.com/indices/stoxx-50-volatility-vstoxx-eur"),
-    "US Dollar Index":yahoo.get_open("https://ca.finance.yahoo.com/quote/%5ENYICDX?p=^NYICDX&.tsrc=fin-srch"),
-    "USD/CAD":yahoo.get_open("https://ca.finance.yahoo.com/quote/CAD=X?p=CAD=X&.tsrc=fin-srch"),
-    "EUR/USD":yahoo.get_open("https://ca.finance.yahoo.com/quote/EURUSD=X?p=EURUSD=X&.tsrc=fin-srch"),
-    "USD/CNY":yahoo.get_open("https://ca.finance.yahoo.com/quote/CNY=X?p=CNY=X&.tsrc=fin-srch"),
-    "USD/JPY":yahoo.get_open("https://ca.finance.yahoo.com/quote/JPY=X?p=JPY=X&.tsrc=fin-srch"),
-    "GBP/USD":yahoo.get_open("https://ca.finance.yahoo.com/quote/GBPUSD=X?p=GBPUSD=X&.tsrc=fin-srch"),
-    "SOFR":get_sofr_rate("https://www.sofrrate.com/")
-}
+        already_released["Commentary"] = already_released.apply(lambda x: finreport().write_indicator_commentary(x), axis=1)
+        released_data_string = "\n".join(list(already_released["Commentary"]))
 
-us_econ_data = {
-    "Headline CPI":"https://fred.stlouisfed.org/series/CPIAUCSL",
-    "Core CPI":"https://fred.stlouisfed.org/series/CPILFESL",
-    "Fed Funds":"https://fred.stlouisfed.org/series/FEDFUNDS",
-    "Unemp. Rate":"https://fred.stlouisfed.org/series/UNRATE"
-}
-    
-# Bond Data
-bond_data = {
-    "US 1 Month Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd01m?countryCode=BX"),
-    "US 3 Month Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd03m?countryCode=BX"),
-    "US 6 Month Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd06m?countryCode=BX"),
-    "US 1 Year Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd01y?countryCode=BX"),
-    "US 2 Year Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd02y?countryCode=BX"),
-    "US 3 Year Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd03y?countryCode=BX"),
-    "US 5 Year Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd05y?countryCode=BX"),
-    "US 7 Year Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd07y?countryCode=BX"),
-    "US 10 Year Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd10y?countryCode=BX"),
-    "US 30 Year Yield":get_market_watch_intraday_quote("https://www.marketwatch.com/investing/bond/tmubmusd30y?countryCode=BX")
-}
+        coming_up["Commentary"] = coming_up.apply(lambda x:  finreport().write_indicator_commentary(x), axis=1)
+        upcoming_data_string = "\n".join(list(coming_up["Commentary"]))
 
-# Commodities
-commodities_df = pd.read_html("https://markets.businessinsider.com/commodities/realtime-list")[0]
-commodities_df = commodities_df.drop(columns=commodities_df.columns[-1])
-commodities_df.columns = ["Commodity", "Last", "Previous Close", "%", "Absolute", "Trade Time", "Unit"]
-commodities_df = commodities_df.dropna(subset=["Commodity"])
-commodities_df = commodities_df.reset_index(drop=True)
-commodities_df["Commodity"] = commodities_df["Commodity"].str.replace(" \(Henry Hub\)", "")
+        return f"### Holidays\n{holidays}\n\n### Speeches\n{speeches_string}\n\n### Economic Releases Today\n {released_data_string}\n\n### Upcoming Economic Releases\n{upcoming_data_string}"
+    def write_commentary(self):
+        indicator_string = finreport().get_indicators()
+        econ_string = finreport().get_econ_calendar()
+        ma_activity = input("M&A Activity? ")
+        cleaned_ma_activity = "\n".join([f"- {n}" for n in [ele.strip() for ele in ma_activity.split("+") if ele.strip() != ""]])
+        headlines = input("Headlines? ")
+        cleaned_headlines = "\n".join([f"- {n}" for n in [ele.strip() for ele in headlines.split("+") if ele.strip() != ""]])
 
-### Economic Events
-holidays, speeches_string, released_data, upcoming_data = get_indicators_report("https://www.investing.com/economic-calendar/")
+        return (f"{indicator_string}\n{econ_string}\n### M&A Activity: \n {cleaned_ma_activity}\n ### Headlines: \n {cleaned_headlines}")
 
-released_data["Commentary"] = released_data.apply(write_indicator_commentary, axis=1)
-released_data_string = "\n".join(list(released_data["Commentary"]))
+text_current = finreport().write_commentary()
 
-upcoming_data["Commentary"] = upcoming_data.apply(write_indicator_commentary, axis=1)
-upcoming_data_string = "\n".join(list(upcoming_data["Commentary"]))
-
-# Commentary
-today = dt.datetime.today()
-text_current = f"\n# {today.month}/{today.day}/{today.year}\n\n"
-
-for key, value in yahoo_data.items():
-    text_current = text_current + f"{key}: {value}\n"
-    
-text_current = text_current + " \n"
-
-for key, value in us_econ_data.items():
-    econ_date, econ_value = get_fred(value)
-    text_current = text_current + f"{key} at {econ_value} as of {econ_date}\n"
-    
-text_current = text_current + " \n"
-
-for key, value in bond_data.items():
-    text_current = text_current + f"{key}: {value}%\n"
-    
-text_current = text_current + " \n"
-
-for row in range(commodities_df.shape[0]):
-    if len(commodities_df.loc[row, "Commodity"]) < 9:
-        commodity = commodities_df.loc[row, "Commodity"] + " Spot"
-    else:
-        commodity = commodities_df.loc[row, "Commodity"]
-    
-    last_price = "${:,.2f}".format(commodities_df.loc[row, "Last"])
-    previous_close = "${:,.2f}".format(commodities_df.loc[row, "Previous Close"])
-    pct = float((commodities_df.loc[row, "%"])[:-1])
-    text_current = text_current + f"{commodity}:\t{last_price}, {pct}% from last close {previous_close}\n"
-    
-text_current = text_current + " \n"
-
-text_current = text_current + f"### Holidays\n{holidays}\n\n### Speeches\n{speeches_string}\n\n### Economic Releases Today\n {released_data_string}\n\n### Upcoming Economic Releases\n{upcoming_data_string}"
-                 
-text_current = text_current + " \n"
-text_current = text_current + " \n"
-
-
-ma_activity = input("M&A Activity? ")
-cleaned_ma_activity = "\n".join([f"- {n}" for n in [ele.strip() for ele in ma_activity.split("-") if ele.strip() != ""]])
-text_current = text_current + (f"### M&A Activity: \n {cleaned_ma_activity}\n")
-
-text_current = text_current + " \n"
-
-headlines = input("Headlines? ")
-cleaned_headlines = "\n".join([f"- {n}" for n in [ele.strip() for ele in headlines.split("-") if ele.strip() != ""]])
-text_current = text_current + (f"### Headlines: \n {cleaned_headlines}")
-
-print("________________________")
-print(text_current)
+with open("/home/cole/Sync/jupyter_projects/daily_finance_report.txt", "w") as export_file:
+    export_file.write(text_current)
