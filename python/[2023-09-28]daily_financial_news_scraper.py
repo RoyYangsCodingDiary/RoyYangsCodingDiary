@@ -360,7 +360,8 @@ class finreport:
         headlines = input("Headlines? ")
         cleaned_headlines = "\n".join([f"- {n}" for n in [ele.strip() for ele in headlines.split("+") if ele.strip() != ""]])
 
-        return (f"{indicator_string}\n{econ_string}\n### M&A Activity: \n {cleaned_ma_activity}\n ### Headlines: \n {cleaned_headlines}")
+        today = dt.datetime.today()
+        return (f"\n# {today.month}/{today.day}/{today.year}\n\n{indicator_string}\n{econ_string}\n### M&A Activity: \n {cleaned_ma_activity}\n ### Headlines: \n {cleaned_headlines}")
 
 text_current = finreport().write_commentary()
 
